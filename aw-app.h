@@ -73,6 +73,7 @@ struct motion {
 	unsigned char id;
 	unsigned char event;
 	float x, y;
+	float dx, dy;
 };
 
 extern unsigned char app_keys[128];
@@ -139,6 +140,19 @@ extern struct pad app_pads[APP_MAXPADS];
 
 bool pad_intercepted();
 bool pad_connected(unsigned i);
+
+/* user interaction */
+
+enum ui_state {
+	UI_COLD,
+	UI_HOT,
+	UI_TOUCHED,
+	UI_RELEASED
+};
+
+const struct motion *ui_motion;
+
+enum ui_state ui_state(unsigned id, float x, float y, float w, float h);
 
 #ifdef __cplusplus
 } /* extern "C" */

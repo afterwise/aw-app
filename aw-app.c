@@ -64,6 +64,10 @@ static XINPUT_STATE pad_data[APP_MAXPADS];
 
 struct pad app_pads[APP_MAXPADS];
 
+const struct motion *ui_motion;
+static unsigned ui_active;
+static unsigned ui_hot;
+
 /* plumbing */
 
 #if __ANDROID__
@@ -288,6 +292,8 @@ static void handle_cursorpos(GLFWwindow *win, double x, double y) {
 		motionghost[0].event = EVENT_BEGIN | EVENT_HOVER;
 
 	for (i = 0; i < app_motioncount; ++i) {
+		motionghost[i].dx = (float) x - motionghost[i].x;
+		motionghost[i].dy = (float) y - motionghost[i].y;
 		motionghost[i].x = (float) x;
 		motionghost[i].y = (float) y;
 	}
@@ -740,6 +746,24 @@ static void update_pads() {
 #endif /* _WIN32 || __CELLOS_LV2__ */
 }
 
+static void update_ui() {
+	unsigned i, n;
+
+	ui_motion = NULL;
+
+	for (i = 0, n = app_motioncount; i < n; ++i)
+		if (ui_motion == NULL && (app_motions[i].event & EVENT_HOVER) != 0)
+			ui_motion = &app_motions[i];
+		else if (ui_motion != NULL && (ui_motion->event & EVENT_HOVER) != 0 &&
+				(app_motions[i].event & EVENT_TOUCH) != 0)
+			ui_motion = &app_motions[i];
+
+	ui_hot = 0;
+
+	if (ui_motion == NULL || (ui_motion->event & EVENT_TOUCH) == 0)
+		ui_active = 0;
+}
+
 static bool update_state() {
 	unsigned state = app_state;
 
@@ -788,6 +812,7 @@ bool app_update() {
 	update_keys();
 	update_motions();
 	update_pads();
+	update_ui();
 
 	return update_state();
 }
@@ -811,5 +836,24 @@ bool pad_connected(unsigned i) {
 	(void) i;
 	return false;
 #endif
+}
+
+enum ui_state ui_state(unsigned id, float x, float y, float w, float h) {
+	if (ui_motion != NULL)
+		if (ui_motion->x >= x && ui_motion->x < x + w &&
+				ui_motion->y >= y && ui_motion->y < y + h) {
+			ui_hot = id;
+
+			if (ui_motion->event == (EVENT_BEGIN | EVENT_TOUCH) && ui_active == 0)
+				ui_active = id;
+		}
+
+	if (ui_active != id)
+		return (ui_hot != id) ? UI_COLD : UI_HOT;
+
+	if (ui_motion->event != (EVENT_END | EVENT_TOUCH))
+		return UI_TOUCHED;
+
+	return (ui_hot != id) ? UI_COLD : UI_RELEASED;
 }
 
