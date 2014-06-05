@@ -269,11 +269,14 @@ static void handle_mousebutton(GLFWwindow *win, int button, int action, int mods
 		if (motionghost[i].id == button + 1)
 			break;
 
-	if (i == app_motioncount)
-		app_motioncount++;
-
 	motionghost[i].id = button + 1;
 	motionghost[i].event = (action == GLFW_PRESS ? EVENT_BEGIN : EVENT_END) | EVENT_TOUCH;
+
+	if (i == app_motioncount) {
+		motionghost[i].x = motionghost[i - 1].x;
+		motionghost[i].y = motionghost[i - 1].y;
+		++app_motioncount;
+	}
 }
 
 static void handle_cursorpos(GLFWwindow *win, double x, double y) {
