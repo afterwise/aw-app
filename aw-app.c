@@ -436,6 +436,9 @@ static void update_motions() {
 		else if ((m.event & 0xf) == EVENT_END)
 			motionghost[i].event = 0;
 
+		motionghost[i].dx = 0.f;
+		motionghost[i].dy = 0.f;
+
 		memcpy(&app_motions[i], &m, sizeof m);
 	}
 }
