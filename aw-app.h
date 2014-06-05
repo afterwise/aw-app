@@ -24,6 +24,7 @@ enum {
 extern void *app_window;
 extern unsigned app_width;
 extern unsigned app_height;
+extern float app_aspect;
 extern unsigned app_state;
 
 void app_init(const char *caption);

@@ -43,6 +43,7 @@
 void *app_window;
 unsigned app_width;
 unsigned app_height;
+float app_aspect;
 
 static unsigned stateghost;
 unsigned app_state;
@@ -118,6 +119,7 @@ static void handle_wdestroy(ANativeActivity *a, ANativeWindow *w) {
 static void handle_wresize(ANativeActivity *a, ANativeWindow *w) {
 	app_width = ANativeWindow_getWidth(w);
 	app_height = ANativeWindow_getHeight(w);
+	app_aspect = (float) app_width / (float) app_height;
 	stateghost |= APP_RESIZE;
 }
 
@@ -362,7 +364,7 @@ void app_init(const char *caption) {
 #elif TARGET_OS_IPHONE
 /* XXX */
 #elif _WIN32 || __linux__ || TARGET_OS_MAC
-	app_motioncount = 2;
+	app_motioncount = 1;
 
 	if (!glfwInit())
 		fprintf(stderr, "glfwInit: failed\n"), abort();
@@ -769,6 +771,7 @@ bool app_update() {
 #elif _WIN32 || __linux__ || TARGET_OS_MAC
 	glfwPollEvents();
 	glfwGetFramebufferSize(app_window, (int *) &app_width, (int *) &app_height);
+	app_aspect = (float) app_width / (float) app_height;
 
 	if (glfwWindowShouldClose(app_window))
 		app_quit();
