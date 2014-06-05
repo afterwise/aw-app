@@ -284,6 +284,9 @@ static void handle_cursorpos(GLFWwindow *win, double x, double y) {
 
 	(void) win;
 
+	if (motionghost[0].event == 0)
+		motionghost[0].event = EVENT_BEGIN | EVENT_HOVER;
+
 	for (i = 0; i < app_motioncount; ++i) {
 		motionghost[i].x = (float) x;
 		motionghost[i].y = (float) y;
