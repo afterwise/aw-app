@@ -165,12 +165,16 @@ static bool handle_key(AInputEvent *e) {
 		keyghost['0' + (key - AKEYCODE_0)] = x;
 	else if (key >= AKEYCODE_A && key <= AKEYCODE_Z)
 		keyghost['A' + (key - AKEYCODE_A)] = x;
+	else if (key == AKEYCODE_BACKSPACE)
+		keyghost[KEY_BACKSPACE] = x;
 	else if (key == AKEYCODE_ENTER)
 		keyghost[KEY_RETURN] = x;
-	else if (key == AKEYCODE_ESCAPE)
-		keyghost[KEY_ESCAPE] = x;
 	else if (key == AKEYCODE_SPACE)
 		keyghost[KEY_SPACE] = x;
+	else if (key == AKEYCODE_TAB)
+		keyghost[KEY_TAB] = x;
+	else if (key == AKEYCODE_ESCAPE)
+		keyghost[KEY_ESCAPE] = x;
 	else if (key == AKEYCODE_DPAD_UP)
 		keyghost[KEY_UP] = x;
 	else if (key == AKEYCODE_DPAD_DOWN)
@@ -247,12 +251,16 @@ static void handle_key(GLFWwindow *win, int key, int scancode, int action, int m
 		keyghost['0' + (key - GLFW_KEY_0)] = x;
 	else if (key >= GLFW_KEY_A && key <= GLFW_KEY_Z)
 		keyghost['A' + (key - GLFW_KEY_A)] = x;
+	else if (key == GLFW_KEY_BACKSPACE)
+		keyghost[KEY_BACKSPACE] = x;
 	else if (key == GLFW_KEY_ENTER)
 		keyghost[KEY_RETURN] = x;
-	else if (key == GLFW_KEY_ESCAPE)
-		keyghost[KEY_ESCAPE] = x;
 	else if (key == GLFW_KEY_SPACE)
 		keyghost[KEY_SPACE] = x;
+	else if (key == GLFW_KEY_TAB)
+		keyghost[KEY_TAB] = x;
+	else if (key == GLFW_KEY_ESCAPE)
+		keyghost[KEY_ESCAPE] = x;
 	else if (key >= GLFW_KEY_UP)
 		keyghost[KEY_UP] = x;
 	else if (key >= GLFW_KEY_DOWN)
