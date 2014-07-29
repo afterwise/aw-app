@@ -1,5 +1,6 @@
 
 #include "aw-app.h"
+#include "aw-arith.h"
 
 #if __APPLE__
 # include <TargetConditionals.h>
@@ -27,18 +28,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
-#if __PPU__
-#define _app_sel(x,a,b) (__fsels((x), (a), (b)))
-#elif _M_PPC
-#define _app_sel(x,a,b) (__fsel((x), (a), (b)))
-#else
-#define _app_sel(x,a,b) ((x) >= 0.f ? (a) : (b))
-#endif
-
-#define _app_min(a,b) (_app_sel((a) - (b), (b), (a)))
-#define _app_max(a,b) (_app_sel((a) - (b), (a), (b)))
-#define _app_clamp(a,mn,mx) (_app_min(_app_max((a), (mn)), (mx)))
 
 void *app_window;
 unsigned app_width;
@@ -468,12 +457,12 @@ static void update_stick(struct pad_stick *stick, float x, float y) {
 
 		/* quadrant angle */
 
-		a = acosf(fabsf(invmag * y));
-		b = _app_sel(quarterpi - a, a, fabsf(halfpi - a));
+		a = acosf(abs_f32(invmag * y));
+		b = sel_f32(quarterpi - a, a, abs_f32(halfpi - a));
 		r = b / quarterpi;
 		k = .164213f * r * mag;
-		tx = _app_sel(x, x - k, x + k);
-		ty = _app_sel(y, y - k, y + k);
+		tx = sel_f32(x, x - k, x + k);
+		ty = sel_f32(y, y - k, y + k);
 	}
 
 	/* circular dead zone */
@@ -578,10 +567,10 @@ static void update_sticks(unsigned i, struct pad *pad) {
 	rx *= .007843137f;
 	ry *= .007843137f;
 
-	lx = _app_clamp(lx - 1.f, -1.f, 1.f);
-	ly = _app_clamp(ly - 1.f, -1.f, 1.f);
-	rx = _app_clamp(rx - 1.f, -1.f, 1.f);
-	ry = _app_clamp(ry - 1.f, -1.f, 1.f);
+	lx = clamp_f32(lx - 1.f, -1.f, 1.f);
+	ly = clamp_f32(ly - 1.f, -1.f, 1.f);
+	rx = clamp_f32(rx - 1.f, -1.f, 1.f);
+	ry = clamp_f32(ry - 1.f, -1.f, 1.f);
 
 	update_stick(&pad->sticks[PAD_LSTICK], lx, ly);
 	update_stick(&pad->sticks[PAD_RSTICK], rx, ry);
@@ -699,8 +688,8 @@ static void update_triggers(unsigned i, struct pad *pad) {
 	l *= .0039215686f; /* l = l / 255 */
 	r *= .0039215686f;
 
-	l = _app_sel(l - XINPUT_GAMEPAD_TRIGGER_THRESHOLD, l, 0f);
-	r = _app_sel(r - XINPUT_GAMEPAD_TRIGGER_THRESHOLD, r, 0f);
+	l = sel_f32(l - XINPUT_GAMEPAD_TRIGGER_THRESHOLD, l, 0f);
+	r = sel_f32(r - XINPUT_GAMEPAD_TRIGGER_THRESHOLD, r, 0f);
 
 	pad->pressure[PAD_L2] = l;
 	pad->pressure[PAD_R2] = r;
@@ -717,10 +706,10 @@ static void update_sticks(unsigned i, struct pad *pad) {
 	rx *= .000000239361f;
 	ry *= .000000239361f;
 
-	lx = _app_clamp(lx - 1.f, -1.f, 1.f);
-	ly = _app_clamp(ly - 1.f, -1.f, 1.f);
-	rx = _app_clamp(rx - 1.f, -1.f, 1.f);
-	ry = _app_clamp(ry - 1.f, -1.f, 1.f);
+	lx = clamp_f32(lx - 1.f, -1.f, 1.f);
+	ly = clamp_f32(ly - 1.f, -1.f, 1.f);
+	rx = clamp_f32(rx - 1.f, -1.f, 1.f);
+	ry = clamp_f32(ry - 1.f, -1.f, 1.f);
 
 	update_stick(&pad->sticks[PAD_LSTICK], lx, ly);
 	update_stick(&pad->sticks[PAD_RSTICK], rx, ry);
