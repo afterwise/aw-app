@@ -400,7 +400,7 @@ void app_init(const char *caption) {
 #endif
 }
 
-void app_end() {
+void app_end(void) {
 #if __ANDROID__
 	ANativeActivity_finish(activity);
 #elif TARGET_OS_IPHONE
@@ -412,7 +412,7 @@ void app_end() {
 #endif
 }
 
-static void update_keys() {
+static void update_keys(void) {
 	unsigned i, x;
 
 	for (i = 0; i < 128; ++i) {
@@ -424,7 +424,7 @@ static void update_keys() {
 	}
 }
 
-static void update_motions() {
+static void update_motions(void) {
 	struct motion m;
 	unsigned i;
 
@@ -732,7 +732,7 @@ static void update_pad(unsigned i) {
 }
 #endif
 
-static void update_pads() {
+static void update_pads(void) {
 #if _WIN32 || __CELLOS_LV2__
 	struct pad *pad;
 	unsigned i;
@@ -749,7 +749,7 @@ static void update_pads() {
 #endif /* _WIN32 || __CELLOS_LV2__ */
 }
 
-static void update_ui() {
+static void update_ui(void) {
 	unsigned i, n;
 
 	ui_motion = NULL;
@@ -767,7 +767,7 @@ static void update_ui() {
 		ui_active = 0;
 }
 
-static bool update_state() {
+static bool update_state(void) {
 	unsigned state = app_state;
 
 	app_state = stateghost;
@@ -776,7 +776,7 @@ static bool update_state() {
 	return !(state & APP_QUIT);
 }
 
-bool app_update() {
+bool app_update(void) {
 #if __ANDROID__
 	AInputEvent *e;
 	bool handled;
@@ -824,11 +824,11 @@ bool app_update() {
 	return update_state();
 }
 
-void app_quit() {
+void app_quit(void) {
 	stateghost |= APP_QUIT;
 }
 
-bool pad_intercepted() {
+bool pad_intercepted(void) {
 #if __CELLOS_LV2__
 	return !!(pad_info.system_info & CELL_PAD_INFO_INTERCEPTED);
 #else

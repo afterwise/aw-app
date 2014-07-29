@@ -29,14 +29,14 @@ extern float app_pxratio;
 extern unsigned app_state;
 
 void app_init(const char *caption);
-void app_end();
+void app_end(void);
 
-bool app_update();
-void app_quit();
+bool app_update(void);
+void app_quit(void);
 
 /* user main */
 
-extern void app_main();
+extern void app_main(void);
 
 /* input events */
 
@@ -139,7 +139,7 @@ struct pad {
 
 extern struct pad app_pads[APP_MAXPADS];
 
-bool pad_intercepted();
+bool pad_intercepted(void);
 bool pad_connected(unsigned i);
 
 /* user interaction */
