@@ -33,6 +33,7 @@ void *app_window;
 unsigned app_width;
 unsigned app_height;
 float app_aspect;
+float app_pxratio;
 
 static unsigned stateghost;
 unsigned app_state;
@@ -113,6 +114,8 @@ static void handle_wresize(ANativeActivity *a, ANativeWindow *w) {
 	app_width = ANativeWindow_getWidth(w);
 	app_height = ANativeWindow_getHeight(w);
 	app_aspect = (float) app_width / (float) app_height;
+	app_pxratio = 1.f;
+
 	stateghost |= APP_RESIZE;
 }
 
@@ -799,9 +802,13 @@ bool app_update() {
 				}
 #elif TARGET_OS_IPHONE
 #elif _WIN32 || __linux__ || TARGET_OS_MAC
+	int w, h;
+
 	glfwPollEvents();
+	glfwGetWindowSize(app_window, &w, &h);
 	glfwGetFramebufferSize(app_window, (int *) &app_width, (int *) &app_height);
 	app_aspect = (float) app_width / (float) app_height;
+	app_pxratio = (float) app_width / (float) w;
 
 	if (glfwWindowShouldClose(app_window))
 		app_quit();
