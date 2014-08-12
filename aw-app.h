@@ -34,6 +34,9 @@ void app_end(void);
 bool app_update(void);
 void app_quit(void);
 
+void app_setclipboard(const char *text);
+const char *app_getclipboard(void);
+
 /* user main */
 
 extern void app_main(void);

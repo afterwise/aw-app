@@ -828,6 +828,20 @@ void app_quit(void) {
 	stateghost |= APP_QUIT;
 }
 
+void app_setclipboard(const char *text) {
+#if _WIN32 || (__linux__ && !__ANDROID__) || TARGET_OS_MAC
+	glfwSetClipboardString(app_window, text);
+#endif
+}
+
+const char *app_getclipboard(void) {
+#if _WIN32 || (__linux__ && !__ANDROID__) || TARGET_OS_MAC
+	return glfwGetClipboardString(app_window);
+#else
+	return NULL;
+#endif
+}
+
 bool pad_intercepted(void) {
 #if __CELLOS_LV2__
 	return !!(pad_info.system_info & CELL_PAD_INFO_INTERCEPTED);
